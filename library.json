@@ -1,0 +1,10 @@
+{
+    "$schema": "https://raw.githubusercontent.com/platformio/platformio-core/develop/platformio/assets/schema/library.json",
+    "name": "SlideApp",
+    "version": "1.0.0",
+    "description": "Lite library to manage simple screens in IoT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/foo/bar.git"
+    }
+}
