@@ -84,6 +84,7 @@ public:
         return this->config->slideAnimationDirectionY * reverse;
     }
 
+    void refreshCurrentSlide();
     void loopSlides();
     void loopAnimation();
     void animationBegin();
@@ -95,8 +96,8 @@ public:
     string getCurrentSlideName();
 
 
-    short animate(short currentTime, short beginningVal, short changeInVal, short duration);
-    short easeIn(short currentTime, short beginningVal, short changeInVal, short duration);
-    short linear(short currentTime, short beginningVal, short changeInVal, short duration);
+    short animate(short time, short beginningVal, short changeInVal, short duration);
+    short easeIn(short time, short beginningVal, short changeInVal, short duration);
+    short linear(short time, short beginningVal, short changeInVal, short duration);
 };
 

@@ -18,6 +18,7 @@ public:
 
     void execute(unsigned long time)
     {
+        this->collection->updateCurrentTime(time);
         this->collection->loopSlides();
     }
 };

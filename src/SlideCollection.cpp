@@ -69,6 +69,23 @@ void SlideCollection::reindexSlides()
     }
 }
 
+void SlideCollection::refreshCurrentSlide()
+{
+    if (this->isAnimationRunning) {
+        return;
+    }
+
+    if (this->slides.size() == 0) {
+        return;
+    }
+
+    this->currentSlide = this->slides.back();
+
+    this->beforeSlidesRender();
+    this->currentSlide->render();
+    this->afterSlidesRender();
+}
+
 void SlideCollection::loopSlides()
 {
     if (this->isAnimationRunning) {
@@ -98,20 +115,20 @@ void SlideCollection::loopAnimation()
         return;
     }
 
-    short currentTime = this->currentTime - this->animationStartTime;
-    if (currentTime > (this->getAnimationDuration() + this->getAnimationDelay())) {
+    short time = this->currentTime - this->animationStartTime;
+    if (time > (this->getAnimationDuration() + this->getAnimationDelay())) {
         this->animationEnd();
         return;
     }
 
     this->currentSlide->setSlidePosition(
-        this->animate(currentTime, this->currentSlide->getStartX(), this->currentSlide->getDiffX(), this->getAnimationDuration()),
-        this->animate(currentTime, this->currentSlide->getStartY(), this->currentSlide->getDiffY(), this->getAnimationDuration())
+        this->animate(time, this->currentSlide->getStartX(), this->currentSlide->getDiffX(), this->getAnimationDuration()),
+        this->animate(time, this->currentSlide->getStartY(), this->currentSlide->getDiffY(), this->getAnimationDuration())
     );
 
     this->nextSlide->setSlidePosition(
-        this->animate(max(currentTime - this->getAnimationDelay(), 0), this->nextSlide->getStartX(), this->nextSlide->getDiffX(), this->getAnimationDuration()),
-        this->animate(max(currentTime - this->getAnimationDelay(), 0), this->nextSlide->getStartY(), this->nextSlide->getDiffY(), this->getAnimationDuration())
+        this->animate(max(time - this->getAnimationDelay(), 0), this->nextSlide->getStartX(), this->nextSlide->getDiffX(), this->getAnimationDuration()),
+        this->animate(max(time - this->getAnimationDelay(), 0), this->nextSlide->getStartY(), this->nextSlide->getDiffY(), this->getAnimationDuration())
     );
 
     this->beforeSlidesRender();
@@ -126,7 +143,7 @@ void SlideCollection::animationBegin()
     this->nextSlide->onSlideActivate();
 
     this->currentSlide->setSlideStart(0, 0);
-    this->currentSlide->setSlideDiff(currentSlide->getW() * this->getAnimationDirectionX(), currentSlide->getH() * this->getAnimationDirectionY());
+    this->currentSlide->setSlideDiff(this->currentSlide->getW() * this->getAnimationDirectionX(), this->currentSlide->getH() * this->getAnimationDirectionY());
 
     this->nextSlide->setSlideStart(this->nextSlide->getW() * this->getAnimationDirectionX() * -1, this->nextSlide->getH() * this->getAnimationDirectionY() * -1);
     this->nextSlide->setSlideDiff(this->nextSlide->getW() * this->getAnimationDirectionX(), this->nextSlide->getH() * this->getAnimationDirectionY());
@@ -194,25 +211,25 @@ string SlideCollection::getCurrentSlideName()
     return this->slides.back()->getName();
 }
 
-short SlideCollection::animate(short currentTime, short beginningVal, short changeInVal, short duration)
+short SlideCollection::animate(short time, short beginningVal, short changeInVal, short duration)
 {
     switch (this->animationTransition) {
         case AnimationTransiton::easeIn:
-            return this->easeIn(currentTime, beginningVal, changeInVal, duration);
+            return this->easeIn(time, beginningVal, changeInVal, duration);
         case AnimationTransiton::linear:
         default:
-            return this->linear(currentTime, beginningVal, changeInVal, duration);
+            return this->linear(time, beginningVal, changeInVal, duration);
     }
 }
 
-short SlideCollection::easeIn(short currentTime, short beginningVal, short changeInVal, short duration)
+short SlideCollection::easeIn(short time, short beginningVal, short changeInVal, short duration)
 {
-    float progress = (float) currentTime / (float) duration;
+    float progress = (float) time / (float) duration;
     return (short) round(progress * progress * progress * (float) changeInVal + (float) beginningVal);
 }
 
-short SlideCollection::linear(short currentTime, short beginningVal, short changeInVal, short duration)
+short SlideCollection::linear(short time, short beginningVal, short changeInVal, short duration)
 {
-    float progress = (float) currentTime / (float) duration;
+    float progress = (float) time / (float) duration;
     return (short) round(progress * (float) changeInVal + (float) beginningVal);
 }

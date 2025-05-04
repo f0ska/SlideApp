@@ -1,14 +1,13 @@
 #pragma once
 #include <Arduino.h>
-
-using function_type = void();
+#include "../AbstractAction.h"
 
 class ArduinoButtonPress
 {
 private:
     unsigned short gpio;
-    function_type* onPress;
-    function_type* onLongPress;
+    AbstractAction* onPress;
+    AbstractAction* onLongPress;
     bool isPreessed = false;
     bool isLongPreessed = false;
     unsigned long lastPress = 0;
@@ -30,7 +29,7 @@ private:
         this->isPreessed = false;
 
         if (!this->isLongPreessed && this->lastPress + this->minDelay < time) {
-            this->onPress();
+            this->onPress->execute();
         }
 
         this->isLongPreessed = false;
@@ -43,11 +42,11 @@ private:
         }
 
         this->isLongPreessed = true;
-        this->onLongPress();
+        this->onLongPress->execute();
     }
 
 public:
-    ArduinoButtonPress(unsigned short gpio, function_type* onPress, function_type* onLongPress) : gpio(gpio), onPress(onPress), onLongPress(onLongPress)
+    ArduinoButtonPress(unsigned short gpio, AbstractAction* onPress, AbstractAction* onLongPress) : gpio(gpio), onPress(onPress), onLongPress(onLongPress)
     {
         pinMode(this->gpio, INPUT_PULLUP);
     };
