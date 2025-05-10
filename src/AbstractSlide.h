@@ -4,18 +4,11 @@
 
 using namespace std;
 
-enum class SlideType
-{
-    NONE,
-    MAIN,
-    SUB,
-};
-
 class AbstractSlide
 {
 protected:
     string name;
-    SlideType type;
+    unsigned long slideTime = 0;
     bool isActive = false;
     short x = 0;
     short y = 0;
@@ -25,12 +18,15 @@ protected:
     short diffX;
     short startY;
     short diffY;
-    unsigned long slideTime = 0;
     bool isOneTime = false;
-    bool isStatic = true;
+    bool reversed = false;
+    string transitionType = "";
+    short directionX = 0;
+    short directionY = 0;
+    bool directionOverriden = false;
 
 public:
-    explicit AbstractSlide(string name, SlideType type = SlideType::NONE) : name(name), type(type)
+    explicit AbstractSlide(string name, unsigned short slideTime = 0) : name(name), slideTime(slideTime)
     {
         this->prepare();
     }
@@ -47,13 +43,14 @@ public:
         this->slideTime = slideTime;
     }
 
-    bool isAutomatic() {
-        return this->type != SlideType::NONE;
+    bool isReversed()
+    {
+        return this->reversed;
     }
 
-    bool getIsMain()
+    void setReversed(bool reversed)
     {
-        return this->type != SlideType::SUB;
+        this->reversed = reversed;
     }
 
     bool getIsActive()
@@ -137,14 +134,41 @@ public:
         return this->isOneTime;
     }
 
-    bool getIsStatic()
-    {
-        return this->isStatic;
-    }
-
     void setIsOneTime(bool isOneTime)
     {
         this->isOneTime = isOneTime;
+    }
+
+    string getTransitionType()
+    {
+        return this->transitionType;
+    }
+
+    void setTransitionType(string transitionType)
+    {
+        this->transitionType = transitionType;
+    }
+
+    short getDirectionX()
+    {
+        return this->directionX;
+    }
+
+    short getDirectionY()
+    {
+        return this->directionY;
+    }
+
+    bool isDirectionOverriden()
+    {
+        return this->directionOverriden;
+    }
+
+    void setAnimationDirection(short directionX, short directionY)
+    {
+        this->directionX = directionX;
+        this->directionY = directionY;
+        this->directionOverriden = true;
     }
 
     string getName()

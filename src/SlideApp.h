@@ -5,6 +5,7 @@
 #include "AbstractEvent.h"
 #include "Event/SlideAnimationEvent.h"
 #include "Event/SlideEvent.h"
+#include "Event/SlideRefreshEvent.h"
 #include "Event/SlideSwitchEvent.h"
 #include "AbstractEventDispatcher.h"
 #include "AbstractSlide.h"

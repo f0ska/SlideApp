@@ -1,7 +1,5 @@
 #include "SlideCollection.h"
 
-using namespace std;
-
 void SlideCollection::beforeSlidesRender()
 {
     this->display->displayClear();
@@ -98,8 +96,9 @@ void SlideCollection::loopSlides()
 
     this->currentSlide = this->slides.back();
 
-    if (this->currentSlide->isAutomatic() && (this->currentTime - this->currentSlideTime) >= this->currentSlide->getSlideTime()) {
+    if (!this->isAnimationPaused() && (this->currentTime - this->currentSlideTime) >= this->currentSlide->getSlideTime()) {
         this->currentSlideTime = this->currentTime;
+        this->moveQueueForward();
         this->animationBegin();
         return;
     }
@@ -122,13 +121,13 @@ void SlideCollection::loopAnimation()
     }
 
     this->currentSlide->setSlidePosition(
-        this->animate(time, this->currentSlide->getStartX(), this->currentSlide->getDiffX(), this->getAnimationDuration()),
-        this->animate(time, this->currentSlide->getStartY(), this->currentSlide->getDiffY(), this->getAnimationDuration())
+        this->animation->animate(this->getTransitionType(this->currentSlide), time, this->currentSlide->getStartX(), this->currentSlide->getDiffX(), this->getAnimationDuration()),
+        this->animation->animate(this->getTransitionType(this->currentSlide), time, this->currentSlide->getStartY(), this->currentSlide->getDiffY(), this->getAnimationDuration())
     );
 
     this->nextSlide->setSlidePosition(
-        this->animate(max(time - this->getAnimationDelay(), 0), this->nextSlide->getStartX(), this->nextSlide->getDiffX(), this->getAnimationDuration()),
-        this->animate(max(time - this->getAnimationDelay(), 0), this->nextSlide->getStartY(), this->nextSlide->getDiffY(), this->getAnimationDuration())
+        this->animation->animate(this->getTransitionType(this->nextSlide), max(time - this->getAnimationDelay(), 0), this->nextSlide->getStartX(), this->nextSlide->getDiffX(), this->getAnimationDuration()),
+        this->animation->animate(this->getTransitionType(this->nextSlide), max(time - this->getAnimationDelay(), 0), this->nextSlide->getStartY(), this->nextSlide->getDiffY(), this->getAnimationDuration())
     );
 
     this->beforeSlidesRender();
@@ -137,16 +136,18 @@ void SlideCollection::loopAnimation()
     this->afterSlidesRender();
 }
 
-void SlideCollection::animationBegin()
+void SlideCollection::animationBegin(bool reverse)
 {
     this->nextSlide->setIsActive(true);
+    this->nextSlide->setReversed(reverse);
     this->nextSlide->onSlideActivate();
 
     this->currentSlide->setSlideStart(0, 0);
-    this->currentSlide->setSlideDiff(this->currentSlide->getW() * this->getAnimationDirectionX(), this->currentSlide->getH() * this->getAnimationDirectionY());
+    this->currentSlide->setReversed(reverse);
+    this->currentSlide->setSlideDiff(this->currentSlide->getW() * this->getAnimationDirectionX(this->currentSlide), this->currentSlide->getH() * this->getAnimationDirectionY(this->currentSlide));
 
-    this->nextSlide->setSlideStart(this->nextSlide->getW() * this->getAnimationDirectionX() * -1, this->nextSlide->getH() * this->getAnimationDirectionY() * -1);
-    this->nextSlide->setSlideDiff(this->nextSlide->getW() * this->getAnimationDirectionX(), this->nextSlide->getH() * this->getAnimationDirectionY());
+    this->nextSlide->setSlideStart(this->nextSlide->getW() * this->getAnimationDirectionX(this->nextSlide) * -1, this->nextSlide->getH() * this->getAnimationDirectionY(this->nextSlide) * -1);
+    this->nextSlide->setSlideDiff(this->nextSlide->getW() * this->getAnimationDirectionX(this->nextSlide), this->nextSlide->getH() * this->getAnimationDirectionY(this->nextSlide));
 
     this->animationStartTime = this->currentTime;
     this->isAnimationRunning = true;
@@ -172,34 +173,34 @@ void SlideCollection::animationEnd()
     this->afterSlidesRender();
 }
 
-void SlideCollection::forward()
+void SlideCollection::forward(bool reverse)
 {
     if (this->isAnimationRunning) {
         this->animationEnd();
     }
 
     this->moveQueueForward();
-    this->animationBegin();
+    this->animationBegin(reverse);
 }
 
-void SlideCollection::backward()
+void SlideCollection::backward(bool reverse)
 {
     if (this->isAnimationRunning) {
         this->animationEnd();
     }
 
     this->moveQueueBackward();
-    this->animationBegin();
+    this->animationBegin(reverse);
 }
 
-void SlideCollection::moveToSlide(string slideName)
+void SlideCollection::moveToSlide(string slideName, bool reverse)
 {
     if (this->isAnimationRunning) {
         this->animationEnd();
     }
 
     this->moveQueueToSlide(slideName);
-    this->animationBegin();
+    this->animationBegin(reverse);
 }
 
 string SlideCollection::getCurrentSlideName()
@@ -209,27 +210,4 @@ string SlideCollection::getCurrentSlideName()
     }
 
     return this->slides.back()->getName();
-}
-
-short SlideCollection::animate(short time, short beginningVal, short changeInVal, short duration)
-{
-    switch (this->animationTransition) {
-        case AnimationTransiton::easeIn:
-            return this->easeIn(time, beginningVal, changeInVal, duration);
-        case AnimationTransiton::linear:
-        default:
-            return this->linear(time, beginningVal, changeInVal, duration);
-    }
-}
-
-short SlideCollection::easeIn(short time, short beginningVal, short changeInVal, short duration)
-{
-    float progress = (float) time / (float) duration;
-    return (short) round(progress * progress * progress * (float) changeInVal + (float) beginningVal);
-}
-
-short SlideCollection::linear(short time, short beginningVal, short changeInVal, short duration)
-{
-    float progress = (float) time / (float) duration;
-    return (short) round(progress * (float) changeInVal + (float) beginningVal);
 }
