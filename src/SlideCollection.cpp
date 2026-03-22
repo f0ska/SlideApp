@@ -144,12 +144,13 @@ void SlideCollection::loopAnimation()
 
 void SlideCollection::animationBegin(bool reverse)
 {
+    bool slideReverse = this->nextSlide->getReverseAnimation() ? !reverse : reverse;
     this->nextSlide->setIsActive(true);
-    this->nextSlide->setReversed(reverse);
+    this->nextSlide->setReversed(slideReverse);
     this->nextSlide->onSlideActivate();
 
     this->currentSlide->setSlideStart(0, 0);
-    this->currentSlide->setReversed(reverse);
+    this->currentSlide->setReversed(slideReverse);
     this->currentSlide->setSlideDiff(this->currentSlide->getW() * this->getAnimationDirectionX(this->currentSlide), this->currentSlide->getH() * this->getAnimationDirectionY(this->currentSlide));
 
     this->nextSlide->setSlideStart(this->nextSlide->getW() * this->getAnimationDirectionX(this->nextSlide) * -1, this->nextSlide->getH() * this->getAnimationDirectionY(this->nextSlide) * -1);

@@ -24,6 +24,7 @@ protected:
     short directionX = 0;
     short directionY = 0;
     bool directionOverriden = false;
+    bool reverseAnimation = false;
 
 public:
     explicit AbstractSlide(string name, unsigned short slideTime = 0) : name(name), slideTime(slideTime)
@@ -173,6 +174,16 @@ public:
     string getName()
     {
         return this->name;
+    }
+    
+    bool getReverseAnimation()
+    {
+        return this->reverseAnimation;
+    }
+    
+    void setReverseAnimation(bool reverseAnimation)
+    {
+        this->reverseAnimation = reverseAnimation;
     }
 
     virtual void prepare() {};
