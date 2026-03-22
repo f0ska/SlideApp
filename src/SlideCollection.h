@@ -22,7 +22,7 @@ private:
     SlideIndex slideIndex;
     bool isAnimationRunning = false;
     bool animationPaused = false;
-    unsigned long animationStartTime;
+    unsigned long animationStartTime = 0;
     unsigned long currentSlideTime = 0;
     unsigned long currentTime = 0;
     AbstractSlide* currentSlide = nullptr;
@@ -46,16 +46,17 @@ public:
 
     void addSlide(AbstractSlide* slide)
     {
+        slide->setSlideSize(this->display->getDisplayWidth(), this->display->getDisplayHeight());
+        slide->prepare();
         slides.push_back(slide);
     }
 
     void addOneTimeSlide(AbstractSlide* slide)
     {
+        slide->setSlideSize(this->display->getDisplayWidth(), this->display->getDisplayHeight());
+        slide->prepare();
         slide->setIsOneTime(true);
         this->slides.push_back(slide);
-        if (!this->isAnimationRunning) {
-            this->currentSlideTime = 0;
-        }
     }
 
     bool isAnimationPaused()

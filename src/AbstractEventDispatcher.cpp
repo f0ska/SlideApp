@@ -60,7 +60,7 @@ bool AbstractEventDispatcher::canTriggerEvent(AbstractEvent* event)
             break;
     }
 
-    int spent = this->prevMiliseconds - event->getPreviousTime();
+    unsigned long spent = this->prevMiliseconds - event->getPreviousTime();
     return spent >= event->getInterval();
 }
 

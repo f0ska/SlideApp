@@ -96,9 +96,14 @@ void SlideCollection::loopSlides()
 
     this->currentSlide = this->slides.back();
 
-    if (!this->isAnimationPaused() && (this->currentTime - this->currentSlideTime) >= this->currentSlide->getSlideTime()) {
+    unsigned long slideTime = this->currentSlide->getSlideTime();
+    bool shouldSwitch = slideTime == 0 || (this->currentTime - this->currentSlideTime) >= slideTime;
+
+    if (!this->isAnimationPaused() && shouldSwitch) {
         this->currentSlideTime = this->currentTime;
+        AbstractSlide* outgoingSlide = this->currentSlide;
         this->moveQueueForward();
+        this->currentSlide = outgoingSlide;
         this->animationBegin();
         return;
     }
@@ -114,20 +119,21 @@ void SlideCollection::loopAnimation()
         return;
     }
 
-    short time = this->currentTime - this->animationStartTime;
+    unsigned long time = this->currentTime - this->animationStartTime;
+
     if (time > (this->getAnimationDuration() + this->getAnimationDelay())) {
         this->animationEnd();
         return;
     }
 
     this->currentSlide->setSlidePosition(
-        this->animation->animate(this->getTransitionType(this->currentSlide), time, this->currentSlide->getStartX(), this->currentSlide->getDiffX(), this->getAnimationDuration()),
-        this->animation->animate(this->getTransitionType(this->currentSlide), time, this->currentSlide->getStartY(), this->currentSlide->getDiffY(), this->getAnimationDuration())
+        this->animation->animate(this->getTransitionType(this->currentSlide), (short)time, this->currentSlide->getStartX(), this->currentSlide->getDiffX(), this->getAnimationDuration()),
+        this->animation->animate(this->getTransitionType(this->currentSlide), (short)time, this->currentSlide->getStartY(), this->currentSlide->getDiffY(), this->getAnimationDuration())
     );
 
     this->nextSlide->setSlidePosition(
-        this->animation->animate(this->getTransitionType(this->nextSlide), max(time - this->getAnimationDelay(), 0), this->nextSlide->getStartX(), this->nextSlide->getDiffX(), this->getAnimationDuration()),
-        this->animation->animate(this->getTransitionType(this->nextSlide), max(time - this->getAnimationDelay(), 0), this->nextSlide->getStartY(), this->nextSlide->getDiffY(), this->getAnimationDuration())
+        this->animation->animate(this->getTransitionType(this->nextSlide), (short)(time > this->getAnimationDelay() ? time - this->getAnimationDelay() : 0), this->nextSlide->getStartX(), this->nextSlide->getDiffX(), this->getAnimationDuration()),
+        this->animation->animate(this->getTransitionType(this->nextSlide), (short)(time > this->getAnimationDelay() ? time - this->getAnimationDelay() : 0), this->nextSlide->getStartY(), this->nextSlide->getDiffY(), this->getAnimationDuration())
     );
 
     this->beforeSlidesRender();

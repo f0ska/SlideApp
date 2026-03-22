@@ -28,7 +28,6 @@ protected:
 public:
     explicit AbstractSlide(string name, unsigned short slideTime = 0) : name(name), slideTime(slideTime)
     {
-        this->prepare();
     }
 
     virtual ~AbstractSlide() {}
