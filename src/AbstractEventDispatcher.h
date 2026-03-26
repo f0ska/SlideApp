@@ -1,10 +1,7 @@
 #pragma once
 
 #include "AbstractEvent.h"
-#include <bits/stdc++.h>
 #include <map>
-
-using namespace std;
 
 typedef unsigned long (*getRealtimePtr)();
 
@@ -16,7 +13,7 @@ private:
     unsigned long prevMinute = 0;
     unsigned long prevHour = 0;
     getRealtimePtr realtime = nullptr;
-    multimap<EventType, AbstractEvent*> observers;
+    std::multimap<EventType, AbstractEvent*> observers;
 
     void runEvents(EventType type);
     bool canTriggerEvent(AbstractEvent* event);

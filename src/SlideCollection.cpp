@@ -39,7 +39,7 @@ void SlideCollection::moveQueueBackward()
     this->reindexSlides();
 }
 
-void SlideCollection::moveQueueToSlide(string slideName)
+void SlideCollection::moveQueueToSlide(std::string slideName)
 {
     this->currentSlide = this->slides.back();
 
@@ -200,7 +200,7 @@ void SlideCollection::backward(bool reverse)
     this->animationBegin(reverse);
 }
 
-void SlideCollection::moveToSlide(string slideName, bool reverse)
+void SlideCollection::moveToSlide(std::string slideName, bool reverse)
 {
     if (this->isAnimationRunning) {
         this->animationEnd();
@@ -210,10 +210,10 @@ void SlideCollection::moveToSlide(string slideName, bool reverse)
     this->animationBegin(reverse);
 }
 
-string SlideCollection::getCurrentSlideName()
+std::string SlideCollection::getCurrentSlideName()
 {
     if (this->slides.size() == 0) {
-        return string("");
+        return std::string("");
     }
 
     return this->slides.back()->getName();

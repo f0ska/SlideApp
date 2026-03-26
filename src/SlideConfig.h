@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-using namespace std;
 
 struct SlideConfig
 {
@@ -9,5 +8,5 @@ struct SlideConfig
     short slideAnimationDirectionY = 0;
     short slideAnimationDuration = 300;
     short slideAnimationDelay = 100;
-    string transitionType = "easeIn";
+    std::string transitionType = "easeIn";
 };

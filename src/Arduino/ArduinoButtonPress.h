@@ -8,40 +8,40 @@ private:
     unsigned short gpio;
     AbstractAction* onPress;
     AbstractAction* onLongPress;
-    bool isPreessed = false;
-    bool isLongPreessed = false;
+    bool isPressed = false;
+    bool isLongPressed = false;
     unsigned long lastPress = 0;
     unsigned short minDelay = 10;
     unsigned short maxDelay = 800;
 
     void push(unsigned long time)
     {
-        if (this->isLongPreessed) {
+        if (this->isLongPressed) {
             return;
         }
 
-        this->isPreessed = true;
+        this->isPressed = true;
         this->lastPress = time;
     }
 
     void release(unsigned long time)
     {
-        this->isPreessed = false;
+        this->isPressed = false;
 
-        if (!this->isLongPreessed && this->lastPress + this->minDelay < time) {
+        if (!this->isLongPressed && this->lastPress + this->minDelay < time) {
             this->onPress->execute();
         }
 
-        this->isLongPreessed = false;
+        this->isLongPressed = false;
     }
 
     void hold(unsigned long time)
     {
-        if (this->isLongPreessed || this->lastPress + this->maxDelay > time) {
+        if (this->isLongPressed || this->lastPress + this->maxDelay > time) {
             return;
         }
 
-        this->isLongPreessed = true;
+        this->isLongPressed = true;
         this->onLongPress->execute();
     }
 
@@ -53,13 +53,13 @@ public:
 
     void loop(unsigned long time)
     {
-        if (!digitalRead(this->gpio) && !this->isPreessed) {
+        if (!digitalRead(this->gpio) && !this->isPressed) {
             this->push(time);
         }
-        if (digitalRead(this->gpio) && this->isPreessed) {
+        if (digitalRead(this->gpio) && this->isPressed) {
             this->release(time);
         }
-        if (!digitalRead(this->gpio) && this->isPreessed) {
+        if (!digitalRead(this->gpio) && this->isPressed) {
             this->hold(time);
         }
     }

@@ -2,12 +2,10 @@
 
 #include <string>
 
-using namespace std;
-
 class AbstractSlide
 {
 protected:
-    string name;
+    std::string name;
     unsigned long slideTime = 0;
     bool isActive = false;
     short x = 0;
@@ -20,14 +18,14 @@ protected:
     short diffY;
     bool isOneTime = false;
     bool reversed = false;
-    string transitionType = "";
+    std::string transitionType = "";
     short directionX = 0;
     short directionY = 0;
     bool directionOverriden = false;
     bool reverseAnimation = false;
 
 public:
-    explicit AbstractSlide(string name, unsigned short slideTime = 0) : name(name), slideTime(slideTime)
+    explicit AbstractSlide(std::string name, unsigned short slideTime = 0) : name(name), slideTime(slideTime)
     {
     }
 
@@ -139,12 +137,12 @@ public:
         this->isOneTime = isOneTime;
     }
 
-    string getTransitionType()
+    std::string getTransitionType()
     {
         return this->transitionType;
     }
 
-    void setTransitionType(string transitionType)
+    void setTransitionType(std::string transitionType)
     {
         this->transitionType = transitionType;
     }
@@ -171,7 +169,7 @@ public:
         this->directionOverriden = true;
     }
 
-    string getName()
+    std::string getName()
     {
         return this->name;
     }

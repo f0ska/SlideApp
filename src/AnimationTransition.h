@@ -3,9 +3,7 @@
 #include <math.h>
 #include <string>
 
-using namespace std;
-
-class AnimationTransiton
+class AnimationTransition
 {
 protected:
     short easeIn(short time, short beginningVal, short changeInVal, short duration)
@@ -21,7 +19,7 @@ protected:
     }
 
 public:
-    virtual short animate(string transition, short time, short beginningVal, short changeInVal, short duration)
+    virtual short animate(std::string transition, short time, short beginningVal, short changeInVal, short duration)
     {
         if (transition == "easeIn") {
             return this->easeIn(time, beginningVal, changeInVal, duration);

@@ -1,13 +1,12 @@
 #include "AbstractEventDispatcher.h"
-
-using namespace std;
+#include <math.h>
 
 void AbstractEventDispatcher::dispatchTimeEvents()
 {
     unsigned long currentMillis = this->getMilliseconds();
-    unsigned int sec = this->getSeconds();
-    unsigned int min = round(sec / 60);
-    unsigned int hour = round(min / 60);
+    unsigned long sec = this->getSeconds();
+    unsigned long min = this->getMinutes();
+    unsigned long hour = this->getHours();
 
     if (currentMillis != this->prevMiliseconds) {
         this->prevMiliseconds = currentMillis;

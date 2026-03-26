@@ -6,9 +6,7 @@
 #include "AbstractSlide.h"
 #include "SlideConfig.h"
 #include "SlideDisplayInterface.h"
-#include "AnimationTransiton.h"
-
-using namespace std;
+#include "AnimationTransition.h"
 
 typedef std::map<std::string, int> SlideIndex;
 
@@ -17,8 +15,8 @@ class SlideCollection
 private:
     SlideConfig* config;
     SlideDisplayInterface* display;
-    AnimationTransiton* animation;
-    deque<AbstractSlide*> slides;
+    AnimationTransition* animation;
+    std::deque<AbstractSlide*> slides;
     SlideIndex slideIndex;
     bool isAnimationRunning = false;
     bool animationPaused = false;
@@ -27,17 +25,17 @@ private:
     unsigned long currentTime = 0;
     AbstractSlide* currentSlide = nullptr;
     AbstractSlide* nextSlide = nullptr;
-    string transitionType = "";
+    std::string transitionType = "";
 
     void beforeSlidesRender();
     void afterSlidesRender();
     void moveQueueForward();
     void moveQueueBackward();
-    void moveQueueToSlide(string slideName);
+    void moveQueueToSlide(std::string slideName);
     void reindexSlides();
 
 public:
-    SlideCollection(SlideConfig* config, SlideDisplayInterface* display, AnimationTransiton* animation) : config(config), display(display), animation(animation) {}
+    SlideCollection(SlideConfig* config, SlideDisplayInterface* display, AnimationTransition* animation) : config(config), display(display), animation(animation) {}
 
     void updateCurrentTime(unsigned long millis)
     {
@@ -97,7 +95,7 @@ public:
         return this->config->slideAnimationDirectionY * reverse;
     }
 
-    string getTransitionType(AbstractSlide* slide)
+    std::string getTransitionType(AbstractSlide* slide)
     {
         if (slide->getTransitionType() != "") {
             return slide->getTransitionType();
@@ -108,7 +106,7 @@ public:
         return this->config->transitionType;
     }
 
-    void setTransitionType(string transitionType)
+    void setTransitionType(std::string transitionType)
     {
         this->transitionType = transitionType;
     }
@@ -121,6 +119,6 @@ public:
 
     void forward(bool reverse = false);
     void backward(bool reverse = true);
-    void moveToSlide(string slideName, bool reverse = false);
-    string getCurrentSlideName();
+    void moveToSlide(std::string slideName, bool reverse = false);
+    std::string getCurrentSlideName();
 };
