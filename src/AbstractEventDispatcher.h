@@ -1,3 +1,4 @@
+#pragma once
 
 #include "AbstractEvent.h"
 #include <bits/stdc++.h>

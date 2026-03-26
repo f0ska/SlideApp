@@ -3,6 +3,7 @@
 #include "AbstractAction.h"
 #include "AbstractController.h"
 #include "AbstractEvent.h"
+#include "Event/SkipFirstEvent.h"
 #include "Event/SlideAnimationEvent.h"
 #include "Event/SlideEvent.h"
 #include "Event/SlideRefreshEvent.h"
