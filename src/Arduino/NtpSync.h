@@ -55,7 +55,7 @@ public:
         instance() = this;
         udp.begin(LOCAL_PORT);
         setSyncProvider(syncCallback);
-        setSyncInterval(5);
+        setSyncInterval(300);
     }
 
     time32_t requestTime()
